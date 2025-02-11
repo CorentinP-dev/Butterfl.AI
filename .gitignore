@@ -1,0 +1,32 @@
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual Environment
+venv/
+.env
+.venv
+myenv
+
+# FastAPI & ChromaDB
+
+# Scrapper
+wikipedia_data
+
+# Node.js
+node_modules/
+frontend/.env.local
+
+# Build
+frontend/dist/
+frontend/.next/
+
+# Editor & OS files
+.DS_Store
+.vscode/
+.idea/
+*.swp

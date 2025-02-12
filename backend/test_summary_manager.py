@@ -1,7 +1,7 @@
 from summary_manager import get_latest_summary, update_summary
 
 # ID de conversation fictif pour le test
-conversation_id = "test_1"
+conversation_id = "test_10"
 
 # Texte simulé pour l'histoire alternative
 text1 = "Napoléon a gagné Waterloo et commence une conquête de l'Europe."

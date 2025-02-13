@@ -122,7 +122,7 @@ button:hover {
 .self-end {
   background-color: #4A90E2; /* Bleu utilisateur */
   color: white;
-  border-radius: 16px;
+  border-radius: 25px;
   padding: 10px 15px;
   max-width: 70%;
   margin-bottom: 10px;
@@ -132,7 +132,7 @@ button:hover {
 .self-start {
   background-color: #333; /* Gris assistant */
   color: white;
-  border-radius: 16px;
+  border-radius: 25px;
   padding: 10px 15px;
   max-width: 70%;
   margin-bottom: 10px;

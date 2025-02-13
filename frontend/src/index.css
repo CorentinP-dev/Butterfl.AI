@@ -75,9 +75,12 @@ input {
   background-color: #374151;
   padding: 0.8em 1.2em;
   border: 1px solid #374151;
+  transition: 0.3s ease;
   font-size: 1rem;
   border-radius: 8px;
   color: white;
+  border-radius: 8px;
+  border: 1px solid transparent;
 }
 
 input::placeholder {
@@ -167,6 +170,6 @@ button:hover {
 }
 
 /* Effet de survol commun */
-button:focus {
+input:focus {
     outline: none;
 }

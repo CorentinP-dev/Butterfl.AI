@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
-const CONVERSATION_UUID = window.crypto.randomUUID()
+const CONVERSATION_UUID = window.crypto.randomUUID();
 
 function LinkRenderer(props) {
   console.log({ props });
@@ -20,7 +20,7 @@ export default function Chatbot() {
   const [loadingMessage, setLoadingMessage] = useState(""); // Pour le message de chargement
   const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/query";
 
-  const [messages, setMessages] = useState([])
+  const [messages, setMessages] = useState([]);
 
   const loadingMessages = [
     { name: "Voltaire", emoji: "⚡" },
@@ -48,7 +48,7 @@ export default function Chatbot() {
     if (messages.length > 0) {
       window.scrollTo(0, document.body.scrollHeight);
     }
-  }, [messages])
+  }, [messages]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,18 +56,30 @@ export default function Chatbot() {
     try {
       const prompt = query;
       setQuery("");
-      setMessages(messages => {
-        return [...messages, {role: "user", content: prompt}]
-      })
+      setMessages((messages) => {
+        return [...messages, { role: "user", content: prompt }];
+      });
       const res = await axios.post(API_URL, { query: prompt, conversation_id: CONVERSATION_UUID });
-      setMessages(messages => {
-        return [...messages, {role: "assistant", content: res.data.response}]
-      })
+      setMessages((messages) => {
+        return [...messages, { role: "assistant", content: res.data.response }];
+      });
       setResponse(res.data.response);
     } catch (error) {
       setResponse("Erreur lors de la récupération des données.");
     }
     setLoading(false);
+  };
+
+  // Fonction pour gérer le clic sur "Bière"
+  const handleBeerClick = (e) => {
+    e.preventDefault(); // Empêche l'envoi d'un message
+    setMessages((messages) => [...messages, { role: "user", content: "Bière" }]);
+  };
+
+  // Fonction pour gérer le clic sur "Eau"
+  const handleWaterClick = (e) => {
+    e.preventDefault(); // Empêche l'envoi d'un message
+    setMessages((messages) => [...messages, { role: "user", content: "Eau" }]);
   };
 
   return (
@@ -79,40 +91,42 @@ export default function Chatbot() {
             {loading ? loadingMessage : ""}
             <div className="ton-oncle">
               <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Posez une question..."
-              className="w-full p-3 border border-gray-700 rounded-lg bg-red-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-            />
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition duration-200"
-              disabled={loading}
-            >
-              {loading ? "Recherche ..." : "Envoyer"}
-            </button>
-                <div class="buttons-container">
-                    <button class="beer-button">Bière</button>
-                    <button class="water-button">Eau</button>
-                </div>
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Posez une question..."
+                className="w-full p-3 border border-gray-700 rounded-lg bg-red-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+              />
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition duration-200"
+                disabled={loading}
+              >
+                {loading ? "Recherche ..." : "Envoyer"}
+              </button>
+              <div className="buttons-container">
+                <input type="button" value="Bière" className="beer-button" />
+                <input type="button" value="Eau" className="water-button" />
+              </div>
             </div>
-
           </div>
         </form>
         {messages.map((message, index) =>
-  message.role === "user" ? (
-    <div key={index} className="mt-6 p-4 bg-blue-600 text-white rounded-lg self-end max-w-xs">
-      <p className="text-gray-300">{message.content}</p>
-    </div>
-  ) : (
-    <div key={index} className="mt-6 p-4 bg-gray-700 text-white rounded-lg self-start max-w-xs">
-      <h2 className="font-bold text-lg text-gray-200">Réponse :</h2>
-      <p className="text-gray-300"><ReactMarkdown components={{a: LinkRenderer}}>{message.content}</ReactMarkdown></p>
-    </div>
-  )
-)}
-
+          message.role === "user" ? (
+            <div key={index} className="mt-6 p-4 bg-blue-600 text-white rounded-lg self-end max-w-xs">
+              <p className="text-gray-300">{message.content}</p>
+            </div>
+          ) : (
+            <div key={index} className="mt-6 p-4 bg-gray-700 text-white rounded-lg self-start max-w-xs">
+              <h2 className="font-bold text-lg text-gray-200">Réponse :</h2>
+              <p className="text-gray-300">
+                <ReactMarkdown components={{ a: LinkRenderer }}>
+                  {message.content}
+                </ReactMarkdown>
+              </p>
+            </div>
+          )
+        )}
       </div>
     </div>
   );

@@ -5,7 +5,8 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-image: url("assets/background-barman.png");
+  background-size: cover;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -41,6 +42,9 @@ body {
 }
 
 h1 {
+  top: 20px; /* Espace depuis le haut */
+  left: 20px;
+  position: absolute;
   font-size: 3.2em;
   line-height: 1.1;
 }
@@ -89,7 +93,7 @@ button {
   font-weight: 500;
   cursor: pointer;
   transition: 0.3s ease;
-  background-color: #2563eb; /* Bleu */
+  background-color: #eb2525; /* Bleu */
   color: #fff;
   max-width: 140px;
   width: 100%;
@@ -112,6 +116,26 @@ button:hover {
   button {
     width: 100%;
   }
+}
+
+/* Bulle de message utilisateur */
+.self-end {
+  background-color: #4A90E2; /* Bleu utilisateur */
+  color: white;
+  border-radius: 25px;
+  padding: 10px 15px;
+  max-width: 70%;
+  margin-bottom: 10px;
+}
+
+/* Bulle de message assistant */
+.self-start {
+  background-color: #333; /* Gris assistant */
+  color: white;
+  border-radius: 25px;
+  padding: 10px 15px;
+  max-width: 70%;
+  margin-bottom: 10px;
 }
 
 

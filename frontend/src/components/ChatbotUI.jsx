@@ -18,6 +18,7 @@ export default function Chatbot() {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(""); // Pour le message de chargement
+  const [temperature, setTemperature] = useState(0.7); // Ajout de l'état pour la température
   const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/query";
 
   const [messages, setMessages] = useState([]);
@@ -30,7 +31,6 @@ export default function Chatbot() {
     { name: "Kant", emoji: "💭" },
   ];
 
-  // Fonction pour mettre à jour le message de chargement
   const updateLoadingMessage = () => {
     const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
     setLoadingMessage(`Je demande à ${randomMessage.name} ${randomMessage.emoji}`);
@@ -59,7 +59,14 @@ export default function Chatbot() {
       setMessages((messages) => {
         return [...messages, { role: "user", content: prompt }];
       });
-      const res = await axios.post(API_URL, { query: prompt, conversation_id: CONVERSATION_UUID });
+
+      // Envoi de la température au backend
+      const res = await axios.post(API_URL, {
+        query: prompt,
+        conversation_id: CONVERSATION_UUID,
+        temperature: temperature, // Envoi de la température
+      });
+
       setMessages((messages) => {
         return [...messages, { role: "assistant", content: res.data.response }];
       });
@@ -70,16 +77,16 @@ export default function Chatbot() {
     setLoading(false);
   };
 
-  // Fonction pour gérer le clic sur "Bière"
+  // Fonction pour augmenter la température de 0.1 (clic sur "Bière")
   const handleBeerClick = (e) => {
     e.preventDefault(); // Empêche l'envoi d'un message
-    setMessages((messages) => [...messages, { role: "user", content: "Bière" }]);
+    setTemperature((prevTemp) => Math.min(prevTemp + 0.1, 1)); // Ajoute 0.1 mais ne dépasse pas 1
   };
 
-  // Fonction pour gérer le clic sur "Eau"
+  // Fonction pour diminuer la température de 0.1 (clic sur "Eau")
   const handleWaterClick = (e) => {
     e.preventDefault(); // Empêche l'envoi d'un message
-    setMessages((messages) => [...messages, { role: "user", content: "Eau" }]);
+    setTemperature((prevTemp) => Math.max(prevTemp - 0.1, 0)); // Retire 0.1 mais ne descend pas sous 0
   };
 
   return (
@@ -104,13 +111,37 @@ export default function Chatbot() {
               >
                 {loading ? "Recherche ..." : "Envoyer"}
               </button>
-              <div className="buttons-container">
-                <input type="button" value="Bière" className="beer-button" />
-                <input type="button" value="Eau" className="water-button" />
-              </div>
+
+                      {/* Jauge de température juste au-dessus des boutons */}
+        <div className="temperature-control w-full mt-6 mb-4">
+          <p className="text-center text-lg mb-2">Température : {Math.round(temperature * 100)}%</p>
+          <div className="w-full bg-gray-600 rounded-full h-2 mb-4">
+            <div
+              className="bg-blue-500 h-2 rounded-full"
+              style={{ width: `${temperature * 100}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Boutons pour ajuster la température sans ajouter de texte */}
+        <div className="buttons-container">
+          <input
+            type="button"
+            value="🍺"
+            className="beer-button"
+            onClick={handleBeerClick}
+          />
+          <input
+            type="button"
+            value="🥤"
+            className="water-button"
+            onClick={handleWaterClick}
+          />
+        </div>
             </div>
           </div>
         </form>
+
         {messages.map((message, index) =>
           message.role === "user" ? (
             <div key={index} className="mt-6 p-4 bg-blue-600 text-white rounded-lg self-end max-w-xs">

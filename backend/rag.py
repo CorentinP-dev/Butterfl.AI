@@ -4,7 +4,7 @@ from vector_database.index_documents import get_events_for_conversation, add_alt
 
 
 # Fonction pour appeler l'API OpenAI et générer une réponse
-def call_openai_api(conversation_id, user_input):
+def call_openai_api(conversation_id, user_input, temperature=0.7):  # Ajouter le paramètre 'temperature'
     client = openai.OpenAI()
 
     # Récupérer le dernier résumé généré
@@ -43,7 +43,7 @@ def call_openai_api(conversation_id, user_input):
              "content": "Tu es un narrateur expert en uchronie. Ta mission est de créer une histoire immersive où chaque choix du joueur modifie le cours de l'histoire."},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.7
+        temperature=temperature  # Utiliser la température dynamique
     )
 
     response_text = response.choices[0].message.content
@@ -56,3 +56,4 @@ def call_openai_api(conversation_id, user_input):
     add_alternative_event(conversation_id, event_id, f"Événement {len(events) + 1}", response_text, summary)
 
     return response_text
+

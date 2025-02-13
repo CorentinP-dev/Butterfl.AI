@@ -82,7 +82,7 @@ export default function Chatbot() {
 
   const handleBeerClick = () => {
     setTemperature((prevTemp) => {
-      const newTemp = Math.min(prevTemp + 0.1, 3);
+      const newTemp = Math.min(prevTemp + 0.1, 3); // test
       console.log("🍺 Nouvelle Température :", newTemp);
       return newTemp;
     });

@@ -60,12 +60,12 @@ export default function Chatbot() {
       setQuery("");
       setMessages((prevMessages) => [...prevMessages, { role: "user", content: prompt }]);
 
-      console.log("🔵 Envoi de la requête avec température :", temperature);
+      console.log("🔵 Température AVANT envoi :", temperature);
 
       const res = await axios.post(API_URL, {
         query: prompt,
         conversation_id: CONVERSATION_UUID,
-        temperature: temperature, // Envoi de la bonne température
+        temperature: temperature,
       });
 
       console.log("🟢 Réponse API :", res.data);
@@ -80,19 +80,18 @@ export default function Chatbot() {
     setLoading(false);
   };
 
-  // ✅ Fix : Utiliser la version "fonctionnelle" de setTemperature
   const handleBeerClick = () => {
     setTemperature((prevTemp) => {
-      const newTemp = Math.min(prevTemp + 0.1, 3); // Augmente par 0.5 au lieu de 0.1
-      console.log("🍺 Température augmentée :", newTemp);
+      const newTemp = Math.min(prevTemp + 0.1, 3);
+      console.log("🍺 Nouvelle Température :", newTemp);
       return newTemp;
     });
   };
 
   const handleWaterClick = () => {
     setTemperature((prevTemp) => {
-      const newTemp = Math.max(prevTemp - 0.1, 0); // Diminue par 0.5 au lieu de 0.1
-      console.log("🥤 Température diminuée :", newTemp);
+      const newTemp = Math.max(prevTemp - 0.1, 0);
+      console.log("🥤 Nouvelle Température :", newTemp);
       return newTemp;
     });
   };

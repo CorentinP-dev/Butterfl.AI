@@ -92,6 +92,10 @@ export default function Chatbot() {
             >
               {loading ? "Recherche ..." : "Envoyer"}
             </button>
+                <div class="buttons-container">
+                    <button class="beer-button">Bière</button>
+                    <button class="water-button">Eau</button>
+                </div>
             </div>
 
           </div>

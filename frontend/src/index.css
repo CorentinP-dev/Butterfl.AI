@@ -118,6 +118,12 @@ button:hover {
   }
 }
 
+/* Conteneur des boutons */
+.buttons-container {
+    display: flex;
+    gap: 10px;
+}
+
 /* Bulle de message utilisateur */
 .self-end {
   background-color: #e2b24a; /* Bleu utilisateur */
@@ -136,4 +142,31 @@ button:hover {
   padding: 10px 15px;
   max-width: 70%;
   margin-bottom: 10px;
+}
+
+/* Style pour le bouton "Bière" */
+.beer-button {
+    background-color: #ff7f50;
+    color: white;
+}
+
+.beer-button:hover {
+    background-color: #e65c00;
+    transform: scale(1.05);
+}
+
+/* Style pour le bouton "Eau" */
+.water-button {
+    background-color: #00bfff;
+    color: white;
+}
+
+.water-button:hover {
+    background-color: #009ac9;
+    transform: scale(1.05);
+}
+
+/* Effet de survol commun */
+button:focus {
+    outline: none;
 }

@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-from conversations import get_or_seed_conversation
-from rag import call_openai_api  # Mise à jour pour utiliser la nouvelle version du RAG
+from backend.conversations import get_or_seed_conversation
+from backend.rag import call_openai_api  # Mise à jour pour utiliser la nouvelle version du RAG
 
 # Charger les variables d'environnement
 load_dotenv()

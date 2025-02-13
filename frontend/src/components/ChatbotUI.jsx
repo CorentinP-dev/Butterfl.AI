@@ -71,10 +71,9 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4 chat-container">
+    <div className="flex flex-col items-center justify-center min-h-screen text-white p-4 chat-container">
       <div className="flex flex-col items-center justify-center h-full">
-        <h1 className="text-3xl font-semibold text-center mb-6">LumIA 💡</h1>
-        <h3 className="text-1l text-center mb-6">LumIA, l’héritière des Lumières pour éclairer votre savoir historique.</h3>
+        <h1 className="text-3xl font-semibold text-center mb-6">Butterfl.IA 🦋</h1>
         <form className="w-full gap-2" onSubmit={handleSubmit}>
           <div className="espace">
             {loading ? loadingMessage : ""}
@@ -84,7 +83,7 @@ export default function Chatbot() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Posez une question..."
-              className="w-full p-3 border border-gray-700 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+              className="w-full p-3 border border-gray-700 rounded-lg bg-red-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
             />
             <button
               type="submit"
@@ -98,17 +97,18 @@ export default function Chatbot() {
           </div>
         </form>
         {messages.map((message, index) =>
-          message.role === "user" ? (
-              <div className="mt-6 p-4 bg-gray-700 shadow-md rounded-lg">
-                <h2 className="font-bold text-lg text-gray-200">Question :</h2>
-                <p className="text-gray-300">{message.content}</p
-                >
-              </div>):
-              <div className="mt-6 p-4 bg-gray-700 shadow-md rounded-lg">
-                <h2 className="font-bold text-lg text-gray-200">Réponse :</h2>
-                <p className="text-gray-300"><ReactMarkdown components={{a: LinkRenderer}}>{message.content}</ReactMarkdown></p>
-              </div>
-        )}
+  message.role === "user" ? (
+    <div key={index} className="mt-6 p-4 bg-blue-600 text-white rounded-lg self-end max-w-xs">
+      <p className="text-gray-300">{message.content}</p>
+    </div>
+  ) : (
+    <div key={index} className="mt-6 p-4 bg-gray-700 text-white rounded-lg self-start max-w-xs">
+      <h2 className="font-bold text-lg text-gray-200">Réponse :</h2>
+      <p className="text-gray-300"><ReactMarkdown components={{a: LinkRenderer}}>{message.content}</ReactMarkdown></p>
+    </div>
+  )
+)}
+
       </div>
     </div>
   );

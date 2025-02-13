@@ -1,67 +1,58 @@
-import os
-import json
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.schema import Document
-from dotenv import load_dotenv
-from chromadb_setup import get_chroma_collection
+import chromadb
+from sentence_transformers import SentenceTransformer
 
-# Charger les variables d'environnement
-load_dotenv()
-
-# Configuration des chemins
-DATA_DIR = "../data_scraping/wikipedia_data"
-
-# Vérification du dossier wikipedia_data
-if not os.path.exists(DATA_DIR):
-    raise FileNotFoundError(f"Le dossier {DATA_DIR} n'existe pas. Vérifiez son emplacement !")
-
-# Récupération de la base ChromaDB via la fonction factorisée
-vectorstore = get_chroma_collection()
+# Charger un modèle d'embedding local
+embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
-# Fonction pour charger et chunker les documents
-def load_and_chunk_documents():
-    documents = []
-    files = [f for f in os.listdir(DATA_DIR) if f.endswith(".json")]
-    print(f"📂 Chargement de {len(files)} fichiers JSON...")
-
-    for idx, file in enumerate(files):
-        file_path = os.path.join(DATA_DIR, file)
-        with open(file_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            text = data.get("text", "")
-            title = data.get("title", "")
-            url = data.get("url", "")
-
-            if text:
-                # Chunking du texte
-                text_splitter = RecursiveCharacterTextSplitter(
-                    chunk_size=500,
-                    chunk_overlap=100
-                )
-                chunks = text_splitter.split_text(text)
-
-                for i, chunk in enumerate(chunks):
-                    documents.append(Document(page_content=chunk, metadata={"title": title, "url": url}))
-                    print(f"  🔹 Chunk {i + 1}/{len(chunks)} extrait pour {title}")
-        print(f"✔️ {idx + 1}/{len(files)} - Fichier {file} traité ({len(chunks)} chunks extraits)")
-
-    return documents
+def embedding_function(text):
+    return embedding_model.encode(text).tolist()
 
 
-# Fonction pour indexer les documents dans ChromaDB
-def index_documents():
-    documents = load_and_chunk_documents()
-    print(f"🗂️ Indexation de {len(documents)} chunks de texte...")
-
-    # Ajout des documents à ChromaDB via LangChain avec suivi de progression
-    for i, doc in enumerate(documents):
-        vectorstore.add_documents([doc])
-        if (i + 1) % 10 == 0 or (i + 1) == len(documents):
-            print(f"📥 {i + 1}/{len(documents)} chunks indexés...")
-
-    print("✅ Indexation terminée !")
+# Connexion à ChromaDB
+client = chromadb.PersistentClient(path="./chroma_db")
+collection = client.get_or_create_collection(name="alternative_history_events")
 
 
-if __name__ == "__main__":
-    index_documents()
+# Fonction pour ajouter un nouvel événement dans ChromaDB
+def add_alternative_event(conversation_id, event_id, title, description, context):
+    event_text = f"{title}. {description}. Contexte : {context}"
+    embedding = embedding_function(event_text)
+
+    collection.add(
+        ids=[event_id],
+        embeddings=[embedding],
+        metadatas=[{
+            "conversation_id": conversation_id,
+            "title": title,
+            "description": description,
+            "context": context
+        }]
+    )
+
+    print(f"✅ Événement ajouté à la conversation {conversation_id} : {title}")
+
+
+# Fonction pour récupérer les événements liés à une conversation
+def get_events_for_conversation(conversation_id, n_results=5):
+    results = collection.query(
+        query_embeddings=[[0] * 384],  # Utilise un vecteur neutre pour récupérer les événements
+        n_results=n_results,
+        where={"conversation_id": conversation_id}
+    )
+
+    if not results["ids"]:  # Vérifie si aucun événement n'est trouvé
+        print("⚠ Aucun événement trouvé pour cette conversation.")
+        return []
+
+    events = []
+    for i in range(len(results["ids"][0])):
+        events.append({
+            "id": results["ids"][0][i],
+            "title": results["metadatas"][0][i]["title"],
+            "description": results["metadatas"][0][i]["description"],
+            "context": results["metadatas"][0][i]["context"]
+        })
+
+    return events
+

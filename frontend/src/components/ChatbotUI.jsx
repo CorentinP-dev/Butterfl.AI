@@ -5,7 +5,6 @@ import ReactMarkdown from "react-markdown";
 const CONVERSATION_UUID = window.crypto.randomUUID();
 
 function LinkRenderer(props) {
-  console.log({ props });
   return (
     <a href={props.href} target="_blank" rel="noreferrer">
       {props.children}
@@ -17,11 +16,12 @@ export default function Chatbot() {
   const [query, setQuery] = useState("");
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState(""); // Pour le message de chargement
-  const [temperature, setTemperature] = useState(0.7); // Ajout de l'état pour la température
-  const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/query";
-
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [temperature, setTemperature] = useState(0.7);
+  const [errorMessage, setErrorMessage] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/query";
 
   const loadingMessages = [
     { name: "Voltaire", emoji: "⚡" },
@@ -39,9 +39,9 @@ export default function Chatbot() {
   useEffect(() => {
     let interval;
     if (loading) {
-      interval = setInterval(updateLoadingMessage, 1000); // Change toutes les 1 secondes
+      interval = setInterval(updateLoadingMessage, 1000);
     }
-    return () => clearInterval(interval); // Clean-up lorsque le composant est démonté ou que le chargement s'arrête
+    return () => clearInterval(interval);
   }, [loading]);
 
   useEffect(() => {
@@ -53,40 +53,47 @@ export default function Chatbot() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage("");
+
     try {
       const prompt = query;
       setQuery("");
-      setMessages((messages) => {
-        return [...messages, { role: "user", content: prompt }];
-      });
+      setMessages((prevMessages) => [...prevMessages, { role: "user", content: prompt }]);
 
-      // Envoi de la température au backend
+      console.log("🔵 Température AVANT envoi :", temperature);
+
       const res = await axios.post(API_URL, {
         query: prompt,
         conversation_id: CONVERSATION_UUID,
-        temperature: temperature, // Envoi de la température
+        temperature: temperature,
       });
 
-      setMessages((messages) => {
-        return [...messages, { role: "assistant", content: res.data.response }];
-      });
+      console.log("🟢 Réponse API :", res.data);
+
+      setMessages((prevMessages) => [...prevMessages, { role: "assistant", content: res.data.response }]);
       setResponse(res.data.response);
     } catch (error) {
-      setResponse("Erreur lors de la récupération des données.");
+      console.error("🔴 Erreur API :", error);
+      setErrorMessage("Erreur lors de la récupération des données.");
     }
+
     setLoading(false);
   };
 
-  // Fonction pour augmenter la température de 0.1 (clic sur "Bière")
-  const handleBeerClick = (e) => {
-    e.preventDefault(); // Empêche l'envoi d'un message
-    setTemperature((prevTemp) => Math.min(prevTemp + 0.1, 1)); // Ajoute 0.1 mais ne dépasse pas 1
+  const handleBeerClick = () => {
+    setTemperature((prevTemp) => {
+      const newTemp = Math.min(prevTemp + 0.1, 3);
+      console.log("🍺 Nouvelle Température :", newTemp);
+      return newTemp;
+    });
   };
 
-  // Fonction pour diminuer la température de 0.1 (clic sur "Eau")
-  const handleWaterClick = (e) => {
-    e.preventDefault(); // Empêche l'envoi d'un message
-    setTemperature((prevTemp) => Math.max(prevTemp - 0.1, 0)); // Retire 0.1 mais ne descend pas sous 0
+  const handleWaterClick = () => {
+    setTemperature((prevTemp) => {
+      const newTemp = Math.max(prevTemp - 0.1, 0);
+      console.log("🥤 Nouvelle Température :", newTemp);
+      return newTemp;
+    });
   };
 
   return (
@@ -112,32 +119,32 @@ export default function Chatbot() {
                 {loading ? "Recherche ..." : "Envoyer"}
               </button>
 
-                      {/* Jauge de température juste au-dessus des boutons */}
-        <div className="temperature-control w-full mt-6 mb-4">
-          <p className="text-center text-lg mb-2">Température : {Math.round(temperature * 100)}%</p>
-          <div className="w-full bg-gray-600 rounded-full h-2 mb-4">
-            <div
-              className="bg-blue-500 h-2 rounded-full"
-              style={{ width: `${temperature * 100}%` }}
-            ></div>
-          </div>
-        </div>
+              {/* Jauge de température juste au-dessus des boutons */}
+              <div className="temperature-control w-full mt-6 mb-4">
+                <p className="text-center text-lg mb-2">Température : {temperature.toFixed(1)}</p>
+                <div className="w-full bg-gray-600 rounded-full h-2 mb-4">
+                  <div
+                    className="bg-blue-500 h-2 rounded-full"
+                    style={{ width: `${(temperature / 5) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
 
-        {/* Boutons pour ajuster la température sans ajouter de texte */}
-        <div className="buttons-container">
-          <input
-            type="button"
-            value="🍺"
-            className="beer-button"
-            onClick={handleBeerClick}
-          />
-          <input
-            type="button"
-            value="🥤"
-            className="water-button"
-            onClick={handleWaterClick}
-          />
-        </div>
+              {/* Boutons pour ajuster la température */}
+              <div className="buttons-container">
+                <input
+                  type="button"
+                  value="🍺"
+                  className="beer-button"
+                  onClick={handleBeerClick}
+                />
+                <input
+                  type="button"
+                  value="🥤"
+                  className="water-button"
+                  onClick={handleWaterClick}
+                />
+              </div>
             </div>
           </div>
         </form>

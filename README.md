@@ -1,37 +1,31 @@
-# 📌 Chatbot Historique - Projet IA & RAG
+# 📌 "And if ..." - Jeu Narratif IA
 
 ## 🚀 Description
 
-Ce projet est un **chatbot intelligent** basé sur **GPT-4** et un système de **RAG (Retrieval-Augmented Generation)**. Il est conçu pour aider les étudiants et professeurs à obtenir des réponses précises en utilisant des **sources documentaires indexées** dans une base de données vectorielle.
+**"And if ..."** est un **jeu narratif interactif** développé par Butterfl_AI, utilisant **GPT-4** pour générer des histoires alternatives basées sur des changements historiques proposés par le joueur. Chaque choix du joueur influence l'uchronie et façonne l'histoire.
 
 ### 🏗 **Technologies utilisées**
 
-- **Backend :** FastAPI, LangChain, ChromaDB, OpenAI API
-- **Frontend :** React (Vite), TailwindCSS
-- **Base de données :** ChromaDB (stockage vectoriel des documents)
+- **Backend :** Python, OpenAI API
+- **Frontend :** React, TailwindCSS
+- **Base de données :** SQLite (pour stocker l'historique et les résumés)
 
 ---
 
 ## 📂 Structure du projet
 
 ```
-/chatbot_project
-│── /backend           # API et RAG
-│   ├── api.py        # API FastAPI
-│   ├── rag.py        # Gestion des embeddings et requêtes ChromaDB
-│── /frontend         # Interface utilisateur
-│   ├── src/components/ChatbotUI.jsx  # Composant du chatbot
-│   ├── package.json  # Dépendances Frontend
-│── /vector_database  # Gestion des données vectorielles
-│   ├── chromadb/          # Base de données vectorielle ChromaDB
-│   ├── index_documents.py  # Indexation des documents
-│   ├── chromadb_setup.py   # Configuration de ChromaDB
-│   ├── query_chromadb.py   # Recherche dans la base vectorielle
-│   ├── test_index.py       # Tests d’indexation et requêtes
-│── /data_scraping    # Données extraites et nettoyées
-│── requirements.txt  # Dépendances Backend
-│── .gitignore        # Exclusions Git
-│── README.md         # Documentation
+/and_if_project
+│── /backend              # Backend du jeu narratif
+│   ├── rag.py            # Gestion de l'interaction avec l'API OpenAI et génération des récits
+│   ├── summary_manager.py# Gestion des résumés dynamiques (backend)
+│   ├── conversations.py  # Stockage des échanges bruts pour le frontend (backend)
+│── /frontend             # Interface utilisateur
+│   ├── src/components/GameUI.jsx  # Interface du jeu
+│   ├── package.json      # Dépendances Frontend
+│── requirements.txt      # Dépendances Backend
+│── .gitignore            # Exclusions Git
+│── README.md             # Documentation
 ```
 
 ---
@@ -41,8 +35,7 @@ Ce projet est un **chatbot intelligent** basé sur **GPT-4** et un système de *
 ### **1️⃣ Cloner le projet**
 
 ```bash
-git clone https://github.com/CorentinP-dev/chatbot_histoire
-cd chatbot_histoire
+git clone https://github.com/CorentinP-dev/Butterfl.AI
 ```
 #### Installer un environnement Python3
 - Linux / Mac
@@ -67,14 +60,11 @@ cd chatbot_histoire
 pip3 install -r requirements.txt
 ```
 
-### **3️⃣ Lancer l’API**
+### **3️⃣ Lancer le Backend**
 
 ```bash
-cd backend/
-python3 api.py
+python -m backend.api
 ```
-
-L’API sera disponible sur `http://127.0.0.1:8000`
 
 ---
 
@@ -88,7 +78,7 @@ npm install
 #### Créer un fichier `.env.local` avec dedans : 
 
 ```bash
-VITE_API_URL=http://127.0.0.1:8000/query
+VITE_API_URL=http://127.0.0.1:8000
 ```
 
 ### **5️⃣ Lancer le Frontend**
@@ -97,32 +87,28 @@ VITE_API_URL=http://127.0.0.1:8000/query
 npm run dev
 ```
 
-Accédez au chatbot sur `http://localhost:5173/`
-
 ---
 
 ## 🔍 Utilisation
 
-1. **Lancer le Backend** (`python api.py`)
+1. **Lancer le Backend** (`python rag.py`)
 2. **Lancer le Frontend** (`npm run dev`)
-3. **Poser des questions sur l’histoire** via l’interface du chatbot
+3. **Jouer en proposant des changements historiques et en faisant des choix pour influencer l'histoire**
 
 ---
 
 ## 📌 Fonctionnalités
 
-✅ Recherche contextuelle avec ChromaDB\
-✅ Réponses enrichies par GPT-4\
-✅ Affichage des sources des réponses\
-✅ Interface utilisateur moderne et intuitive
+✅ Génération d'uchronies interactives avec GPT-4\
+✅ Résumés dynamiques assurant la continuité\
+✅ Interface utilisateur moderne et immersive
 
 ---
 
 ## 🛠 Améliorations futures
-
--
+- Migration vers un modèle LLM local (Phi-2)
+- Optimisation des prompts
 
 🚀 **Contribuez & Améliorez le projet !** 🎯
 
-Tous droits réservés à Corentin PELLETIER
-
+Tous droits réservés à Butterfl_AI

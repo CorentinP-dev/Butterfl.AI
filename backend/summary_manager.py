@@ -42,9 +42,19 @@ def generate_summary(text):
             {"role": "system",
              "content": "Tu es un narrateur d'histoires alternatives. Ta tâche est de résumer les événements fictifs créés par le joueur dans le cadre d'une uchronie."},
             {"role": "user",
-             "content": f"Voici l’histoire alternative en cours :\n{text}\n\nGénère un résumé en 3 phrases, en respectant cette histoire sans la corriger."}
+             "content": f"""
+            📜 **Histoire alternative actuelle** :  
+            {text}
+
+            ✍️ **Instructions pour le résumé** :  
+            - Résume les événements clés de l’histoire alternative de manière concise mais détaillée (5 à 7 phrases maximum).  
+            - Maintiens la cohérence avec l’univers uchronique et les décisions du joueur.  
+            - Conserve un ton narratif immersif pour faciliter la continuité de l’histoire.
+
+            ✨ Génère maintenant un résumé dynamique respectant ces principes.
+            """}
         ],
-        temperature=0.7
+        temperature=0.5
     )
     return response.choices[0].message.content
 

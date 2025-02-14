@@ -20,6 +20,8 @@ export default function Chatbot() {
   const [temperature, setTemperature] = useState(0.7);
   const [errorMessage, setErrorMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [showPopup, setShowPopup] = useState(true);
+
 
   const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/query";
 
@@ -103,6 +105,16 @@ export default function Chatbot() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-white p-4 chat-container">
+      {showPopup && (
+        <div className="mt-6 p-4 bg-gray-700 text-white rounded-lg self-start max-w-xs">
+          <h2 className="text-xl font-bold mb-2">Et si ... ?</h2>
+          <p>Bienvenue, dans le butterfly, le bar de John.<br/>Avec John vous aimez bien refaire le monde.<br/>À chaque ça commence avec "Et si ..."</p>
+          <p>Attention l'abus d'alcool est dangereux pour la santé.</p>
+          <button className="mt-4 bg-blue-500 px-4 py-2 rounded" onClick={() => setShowPopup(false)}>
+            J'ai compris
+          </button>
+        </div>
+      )}
       <div className="flex flex-col items-center justify-center h-full">
         <h1 className="text-3xl font-semibold text-center mb-6">Butterfl.IA 🦋</h1>
         <form className="w-full gap-2" onSubmit={handleSubmit}>

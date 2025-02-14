@@ -144,7 +144,7 @@ button:hover {
   color: white;
   border-radius: 25px;
   padding: 10px 15px;
-  max-width: 70%;
+  max-width: 100%;
   margin-bottom: 10px;
 }
 

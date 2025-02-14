@@ -24,16 +24,21 @@ export default function Chatbot() {
   const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/query";
 
   const loadingMessages = [
-    { name: "Voltaire", emoji: "⚡" },
-    { name: "Rousseau", emoji: "🌱" },
-    { name: "Montesquieu", emoji: "⚖️" },
-    { name: "Diderot", emoji: "📚" },
-    { name: "Kant", emoji: "💭" },
+    { name: "une biere", emoji: "🍺" },
+    { name: "un dry martini", emoji: "🍸" },
+    { name: "un champagne", emoji: "🥂" },
+    { name: "un café", emoji: "☕️" },
+    { name: "un verre de lait", emoji: "🥛" },
+    { name: "un whisky", emoji: "🥃" },
+    { name: "une tequila sunrise", emoji: "🍹" },
+    { name: "un biberon", emoji: "🍼" },
+    { name: "un cocktail pas ouf", emoji: "🧉" },
+    { name: "un verre de bordeaux", emoji: "🍷" },
   ];
 
   const updateLoadingMessage = () => {
     const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-    setLoadingMessage(`Je demande à ${randomMessage.name} ${randomMessage.emoji}`);
+    setLoadingMessage(`John le Barman sert ${randomMessage.name} ${randomMessage.emoji}`);
   };
 
   useEffect(() => {
